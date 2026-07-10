@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The Trust Layer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="bg-orbs" aria-hidden="true"><span></span><span></span><span></span></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">◈</div>
+      <div>
+        <div class="brand-name">The Trust Layer</div>
+        <div class="brand-sub">honest ML for small-data biology</div>
+      </div>
+    </div>
+    <a class="ghost-link" href="https://github.com" onclick="return false;">Data leakage, exposed.</a>
+  </header>
+
+  <main>
+    <!-- ===================== INPUT ===================== -->
+    <section id="input-view">
+      <div class="hero-copy">
+        <h1>Is that <span class="grad">0.98 AUC</span> real?</h1>
+        <p>Upload your dataset and analysis. The Trust Layer audits it for data
+           leakage, re-runs an honest leakage-safe cross-validation, and tells
+           you what your data can <em>actually</em> support.</p>
+      </div>
+
+      <div class="card uploader">
+        <div class="drops">
+          <div class="drop" id="drop-expr">
+            <input type="file" accept=".csv" hidden />
+            <div class="drop-icon">▤</div>
+            <div class="drop-title">Expression matrix <span class="req">required</span></div>
+            <div class="drop-hint">CSV — samples × features</div>
+            <div class="drop-file"></div>
+          </div>
+
+          <div class="drop" id="drop-meta">
+            <input type="file" accept=".csv" hidden />
+            <div class="drop-icon">▦</div>
+            <div class="drop-title">Metadata <span class="opt">optional</span></div>
+            <div class="drop-hint">CSV — label, subject, batch</div>
+            <div class="drop-file"></div>
+          </div>
+
+          <div class="drop" id="drop-script">
+            <input type="file" accept=".py,.ipynb" hidden />
+            <div class="drop-icon">‹›</div>
+            <div class="drop-title">Analysis script <span class="opt">optional</span></div>
+            <div class="drop-hint">.py / .ipynb — static code audit</div>
+            <div class="drop-file"></div>
+          </div>
+        </div>
+
+        <div class="mapping" id="mapping" hidden>
+          <div class="map-field">
+            <label>Outcome / label</label>
+            <select id="sel-label"></select>
+          </div>
+          <div class="map-field">
+            <label>Subject / group <span class="dim">(leak check)</span></label>
+            <select id="sel-group"><option value="">— none —</option></select>
+          </div>
+          <div class="map-field">
+            <label>Batch / plate <span class="dim">(confound check)</span></label>
+            <select id="sel-batch"><option value="">— none —</option></select>
+          </div>
+        </div>
+
+        <div class="options">
+          <div class="opt-field">
+            <label>Model</label>
+            <select id="sel-model">
+              <option value="auto">Auto (linear + nonlinear)</option>
+              <option value="logreg">Calibrated LogReg</option>
+              <option value="hgb">Calibrated HistGB</option>
+            </select>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="chk-nested" checked />
+            <span class="track"><span class="thumb"></span></span>
+            Nested CV (tuning honesty)
+          </label>
+        </div>
+
+        <div class="actions">
+          <button class="btn primary" id="btn-run" disabled>Analyze dataset</button>
+          <button class="btn ghost" id="btn-sample">Try sample data</button>
+          <button class="btn ghost subtle" id="btn-sample-clean">Try a clean dataset</button>
+        </div>
+        <div class="err" id="err" hidden></div>
+      </div>
+    </section>
+
+    <!-- ===================== LOADING ===================== -->
+    <section id="loading-view" hidden>
+      <div class="loader">
+        <div class="loader-ring"><span></span><span></span><span></span></div>
+        <div class="loader-caption" id="loader-caption">Starting…</div>
+        <div class="loader-bar"><div class="loader-bar-fill" id="loader-bar-fill"></div></div>
+        <div class="loader-steps" id="loader-steps"></div>
+      </div>
+    </section>
+
+    <!-- ===================== RESULTS ===================== -->
+    <section id="result-view" hidden>
+      <div class="result-head">
+        <button class="btn ghost" id="btn-back">← New analysis</button>
+        <div class="result-meta" id="result-meta"></div>
+      </div>
+
+      <div class="card verdict" id="verdict"></div>
+
+      <div class="grid">
+        <div class="card ladder-card">
+          <h3>How each leak inflated the score</h3>
+          <div class="ladder" id="ladder"></div>
+        </div>
+
+        <div class="card model-card">
+          <h3>Honest performance</h3>
+          <div class="model-body" id="model-body"></div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card audit-card">
+          <h3>Code audit <span class="tag" id="code-tag"></span></h3>
+          <div id="code-audit"></div>
+        </div>
+        <div class="card audit-card">
+          <h3>Data audit <span class="tag" id="data-tag"></span></h3>
+          <div id="data-audit"></div>
+        </div>
+      </div>
+
+      <div class="card report-card">
+        <div class="report-head">
+          <h3>Full report</h3>
+          <button class="btn ghost" id="btn-download">Download .md</button>
+        </div>
+        <details>
+          <summary>Show the plain-language report</summary>
+          <div class="report-md" id="report-md"></div>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    No uploaded code is executed — the code audit is purely static.
+    Honest CV fits scaling, selection & batch centering inside each fold; GroupKFold keeps subjects intact.
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>

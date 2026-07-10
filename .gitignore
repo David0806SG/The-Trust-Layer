@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Virtualenv (recreated by webapp/run.sh)
+.venv/
+venv/
+
+# Trust Layer build/output artifacts
+code/target/
+**/trust_out/
+**/trust_out_compat/
+
+# Sample datasets are unpacked from sample_data/*.zip — reproducible, so not tracked
+code/sample_dataset/
+code/sample_dataset_clean/
+sample_data/sample_dataset/
+sample_data/sample_dataset_clean/
+
+# Browser-automation / scratch
+.playwright-mcp/
+
+# OS
+.DS_Store

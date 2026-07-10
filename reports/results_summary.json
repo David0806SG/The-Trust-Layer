@@ -1,0 +1,75 @@
+{
+  "dataset": {
+    "n": 160,
+    "p": 800,
+    "n_subjects": 40,
+    "reps": 4,
+    "n_true_features": 25,
+    "batch_cramers_v": 0.6744791666666666
+  },
+  "audit": [
+    {
+      "check": "dimensionality",
+      "severity": "warning",
+      "message": "High-dimensional small-n regime: 800 features vs 160 samples (p/n = 5.0). Univariate feature selection on the full dataset will find spurious signal; nested CV is mandatory."
+    },
+    {
+      "check": "class_balance",
+      "severity": "ok",
+      "message": "Classes reasonably balanced (minority = 40%)."
+    },
+    {
+      "check": "duplicate_rows",
+      "severity": "ok",
+      "message": "No exact duplicate feature rows."
+    },
+    {
+      "check": "subject_leakage",
+      "severity": "critical",
+      "message": "Repeated measures present: 40 unique subjects for 160 rows (up to 4 rows/subject). A plain train/test split or StratifiedKFold puts the same subject on both sides. Use GroupKFold on subject ID."
+    },
+    {
+      "check": "batch_confound",
+      "severity": "critical",
+      "message": "Batch is confounded with the outcome (Cramer's V = 0.67, p = 1.4e-17). A model can score high by reading batch signatures in the features instead of biology. Correct for batch or split by batch."
+    },
+    {
+      "check": "leaky_feature_selection",
+      "severity": "critical",
+      "message": "Feature selection was performed on the FULL dataset before the train/test split. With p >> n this alone can manufacture a 0.9+ AUC from pure noise. Move selection inside the CV folds."
+    },
+    {
+      "check": "leaky_preprocessing",
+      "severity": "critical",
+      "message": "Scaling/imputation was fit on the full dataset (test rows informed the transform). Fit preprocessing on train folds only."
+    }
+  ],
+  "n_critical": 4,
+  "n_warning": 1,
+  "cv_ladder": {
+    "naive": [
+      0.9796390013495276,
+      0.014258487858973138
+    ],
+    "groupkfold": [
+      0.93875,
+      0.060808356744776464
+    ],
+    "groupkfold_batch": [
+      0.8885937500000001,
+      0.06037408700712949
+    ]
+  },
+  "tabpfn": {
+    "leaky": {
+      "auc": 0.9347330729166666,
+      "brier": 0.09716465878315918,
+      "logloss": 0.3785337737401878
+    },
+    "honest": {
+      "auc": 0.8964843749999999,
+      "brier": 0.13268447681677675,
+      "logloss": 0.4092714782625116
+    }
+  }
+}

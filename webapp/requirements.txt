@@ -1,0 +1,13 @@
+# The Trust Layer web UI — pinned for reproducibility.
+# Tested with Python 3.12.
+
+# Web layer
+fastapi==0.139.0
+uvicorn==0.51.0
+python-multipart==0.0.32
+
+# Scientific stack (the audit engine in ../code)
+scikit-learn==1.9.0
+scipy==1.18.0
+pandas==3.0.3
+numpy==2.5.1
