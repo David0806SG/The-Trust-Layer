@@ -1,4 +1,4 @@
-# The Trust Layer : Build with Claude Science
+# The Trust Layer : Build with Claude Science + Fable 5
 
 > Built for the [Anthropic Research × Built with Claude: Life Sciences hackathon](https://cerebralvalley.ai/e/built-with-claude-life-sciences).
 
