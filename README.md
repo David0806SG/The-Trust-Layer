@@ -1,4 +1,4 @@
-# The Trust Layer — release bundle
+# The Trust Layer : Build with Claude Science
 
 > Built for the [Anthropic Research × Built with Claude: Life Sciences hackathon](https://cerebralvalley.ai/e/built-with-claude-life-sciences).
 
